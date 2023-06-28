@@ -1,6 +1,6 @@
 import json
 import subprocess
-with open('./Desktop/vstonetimegap/data/loaded_data/curlLog_input/alertlogs_sent_to_cloud.txt','r') as f1:
+with open('./Desktop/video_download_project/data/loaded_data/curlLog_input/alertlogs_sent_to_cloud.txt','r') as f1:
                     for line in f1:
                         splitted_line=line.split(",")
                         sensor_number=line[0:8]
