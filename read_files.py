@@ -23,15 +23,15 @@ from   shutil          import copyfileobj, move
 from   datetime        import datetime, timedelta
 from moviepy.editor import *
 #10093015 2023-06-13 22:26:29-0500, Response, 1686713189229, 1168671337, curl return: 0, https return: 200, {"RequestId":"cef84462-2888-483c-80bb-51f673e1ef0f","TotalSeconds":1.0508878,"FROM":"02763288f5be6962b"}, 44.240.206.169
-#sensor_number='10100002'
-#date="2023:06:15"
-#date=date.replace(":","_")
-#time="13:39:05"
-#time=time.replace(":","-")
-#beforetime=alert_log_line['timestamp'][11:19]
-#beforetime=beforetime.replace(":","-")
-#timestamp='1229780677'
-#date_time=date+"_"+time
+# sensor_number='10015003'
+# date="2023:09:15"
+# date=date.replace(":","_")
+# time="13:06:51"
+# time=time.replace(":","-")#
+# #beforetime=alert_log_line['timestamp'][11:19]
+# #beforetime=beforetime.replace(":","-")
+# timestamp='320853231'
+# date_time=date+"_"+time
 date = sys.argv[1]
 time = sys.argv[2]
 date_time=sys.argv[3]
@@ -41,7 +41,7 @@ date_time=sensor_number+"_"+date_time
 
 
 
-folder_paths = ['./Desktop/video_download_project/collected_frames', './Desktop/video_download_project/data', './Desktop/video_download_project/Video_input']
+folder_paths = ['./Desktop/video_download_project/collected_frames', './Desktop/video_download_project/converted-frames', './Desktop/video_download_project/Video_input']
 
 for folder_path in folder_paths:
     # Get list of all files in folder
@@ -230,8 +230,8 @@ cam = cv2.VideoCapture(video_paths[0])
 #print(cam.read())
 try:
 	# creating a folder named data
-	if not os.path.exists('./Desktop/video_download_project/data'):
-		os.makedirs('./Desktop/video_download_project/data')
+	if not os.path.exists('./Desktop/video_download_project/converted-frames'):
+		os.makedirs('./Desktop/video_download_project/converted-frames')
 
 # if not created then raise error
 except OSError:
@@ -248,7 +248,7 @@ while(True):
 
 	if ret:
 		# if video is still left continue creating images
-		name = './Desktop/video_download_project/data/frame' + str(currentframe) + '.jpg'
+		name = './Desktop/video_download_project/converted-frames/frame' + str(currentframe) + '.jpg'
 		print ('Creating...' + name)
 
 		# writing the extracted images
@@ -266,8 +266,8 @@ cv2.destroyAllWindows()
 
 
 
-folder_path = './Desktop/video_download_project/data'
-files=os.listdir("./Desktop/video_download_project/data")
+folder_path = './Desktop/video_download_project/converted-frames'
+files=os.listdir("./Desktop/video_download_project/converted-frames")
 file_list=[]
 for filename in files:
     file_list.append(filename)
@@ -293,7 +293,7 @@ pytesseract.tesseract_cmd = path_to_tesseract
 while i <=((len(sorted_filenames))):
     print(i)
     y=0
-    path_to_image=(os.path.join("./Desktop/video_download_project/data", sorted_filenames[i]))
+    path_to_image=(os.path.join("./Desktop/video_download_project/converted-frames", sorted_filenames[i]))
     image = Image.open(path_to_image)
 
 # Define the pixel range to extract
@@ -316,11 +316,11 @@ while i <=((len(sorted_filenames))):
         #print("yes")
         #break
     print(type(monotonic_ms))
-    lower_bound = int(monotonic_ms[0:8])-1
-    upper_bound = int(monotonic_ms[0:8])-1
+    lower_bound = int(monotonic_ms[0:(len(monotonic_ms)-2)])-1
+    upper_bound = int(monotonic_ms[0:(len(monotonic_ms)-2)])-1
     
-    lower_bound1=int(monotonic_ms[0:7])-1
-    upper_bound1=int(monotonic_ms[0:7])+1
+    lower_bound1=int(monotonic_ms[0:(len(monotonic_ms)-3)])-1
+    upper_bound1=int(monotonic_ms[0:(len(monotonic_ms)-3)])+1
 
 # Define the regular expression pattern to search for
     pattern = re.compile(r"\b(" + "|".join(str(i) for i in range(lower_bound, upper_bound + 1)) + r")\b")
@@ -328,8 +328,8 @@ while i <=((len(sorted_filenames))):
     pattern1 = re.compile(r"\b(" + "|".join(str(i) for i in range(lower_bound1, upper_bound1 + 1)) + r")\b")
 
 # Search for the pattern in the text
-    matches = re.findall(pattern, text[0:8])
-    matches1 = re.findall(pattern1, text[0:7])
+    matches = re.findall(pattern, text[0:(len(monotonic_ms)-2)])
+    matches1 = re.findall(pattern1, text[0:(len(monotonic_ms)-3)])
 # Print out any matches found
     if matches:
         print("Found the following matches:", ", ".join(matches))
@@ -347,6 +347,28 @@ while i <=((len(sorted_filenames))):
     #if  monotonic_ms[0:7].isdigit():
         #if (int(monotonic_ms[0:7])+10000)<int(text[0:7]):
             #print("No matches found")
+    #for j in range(7,0,-1):
+        #print(j)
+        #if str(int(monotonic_ms[0:2])-j) in text[0:2]:
+                #y=50
+                #break
+        #elif  str(int(monotonic_ms[0:3])-j)  in text[0:3]:
+                #y=50
+                #break
+        #elif str(int(monotonic_ms[0:4])-j) in text[0:4]:
+                #y=20
+                #break
+        #elif str(int(monotonic_ms[0:5])-j) in text[0:5]:
+                #y=5
+                #break
+    #if y==50:
+        #i+=50
+    #elif y==20:
+        #i+=20
+    #elif y==5:
+        #i+=5
+   # else:
+        #i+=2
     for j in range(7,0,-1):
         #print(j)
         if str(int(monotonic_ms[0:2])-j) in text[0:2]:
@@ -361,6 +383,7 @@ while i <=((len(sorted_filenames))):
         elif str(int(monotonic_ms[0:5])-j) in text[0:5]:
                 y=5
                 break
+        
     if y==50:
         i+=50
     elif y==20:
@@ -368,8 +391,7 @@ while i <=((len(sorted_filenames))):
     elif y==5:
         i+=5
     else:
-        i+=2
-        
+        i+=2  
 # Set the number of frames to extract before and after the specified frame
 num_frames_before = 100
 num_frames_after = 50
@@ -416,6 +438,8 @@ def convert_frames_to_video(pathIn,pathOut,fps):
     files = [f for f in os.listdir(pathIn) if isfile(join(pathIn, f))]
     # #for sorting the file names properly
     #files.sort(key = lambda x: int(x[5:-4]))
+    # Sort the files based on their names (assuming the filenames are in sequential order)
+    files.sort()
     for i in range(len(files)):
         filename=pathIn + files[i]
         #reading each files
@@ -455,7 +479,6 @@ if __name__=="__main__":
 
 #delete all files in folders
 
-folder_paths = ['./Desktop/video_download_project/collected_frames', './Desktop/video_download_project/data', './Desktop/video_download_project/Video_input']
 
 for folder_path in folder_paths:
     # Get list of all files in folder
